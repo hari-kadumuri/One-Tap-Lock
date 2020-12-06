@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">One-Tap-Lock</string>
+    <string name="app_description">App to Lock</string>
+    <string name="hard_lock_btn_name">Hard Lock</string>
+    <string name="message">Please make sure this app is given administrator permission for Hard Lock to work</string>
+    <string name="soft_lock_btn_name">Soft Lock</string>
+</resources>
