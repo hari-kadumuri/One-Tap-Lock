@@ -13,6 +13,8 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 
+import static java.lang.Thread.*;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -37,6 +39,16 @@ public class MainActivity extends AppCompatActivity {
                 value = Settings.System.canWrite(getApplicationContext());
                 if(value) {
                     Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, 500);
+                    // wait for 15 seconds and reset timeout to 5 mins
+                    synchronized (currentThread()) {
+                        try {
+                            currentThread().wait(15000);
+                        } catch (Exception e) {
+                            System.out.println("Exception caught: " + e);
+                        }
+                    }
+                    // resetting timeout back to 5 mins
+                    Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, 300000);
                 }
                     else {
                     Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
