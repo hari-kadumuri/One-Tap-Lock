@@ -3,6 +3,7 @@ package com.example.one_tap_lock;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.admin.DevicePolicyManager;
+import android.bluetooth.BluetoothClass;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import static java.lang.Thread.*;
 
@@ -26,8 +28,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 DevicePolicyManager deviceManager = (DevicePolicyManager) getSystemService(Context. DEVICE_POLICY_SERVICE );
-                ComponentName thisApp = new ComponentName(getApplication(), MainActivity.class);
-                deviceManager.lockNow();
+                ComponentName thisApp = new ComponentName(getApplicationContext(), MainActivity.class);
+                if(deviceManager != null & deviceManager.isAdminActive(thisApp)) {
+                    deviceManager.lockNow();
+                    finishAffinity();
+                    System.exit(0);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Please enable admin access for this app in settings", Toast.LENGTH_LONG).show();
+//                    Intent intent = new Intent(deviceManager.ACTION_ADD_DEVICE_ADMIN);
+//                    intent.putExtra(deviceManager.EXTRA_DEVICE_ADMIN, thisApp);
+//                    intent.putExtra(deviceManager.EXTRA_ADD_EXPLANATION , "Please enable the admin access" );
+//                    startActivityForResult(intent, 1);
+                }
             }
         });
 
@@ -49,8 +62,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                     // resetting timeout back to 5 mins
                     Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, 300000);
+                    finishAffinity();
+                    System.exit(0);
                 }
-                    else {
+                else {
                     Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
                     intent.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
                     startActivity(intent);
